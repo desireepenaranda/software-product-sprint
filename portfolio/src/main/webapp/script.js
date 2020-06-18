@@ -40,5 +40,5 @@
     document.addEventListener('DOMContentLoaded', function() {
             // method call to get the name response 
             getNameInfoUsingAsycAwait();
-        });
+    });
 

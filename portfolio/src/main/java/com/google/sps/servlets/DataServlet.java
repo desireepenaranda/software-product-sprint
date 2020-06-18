@@ -31,7 +31,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
-    
+
     //make sure that if the page is reloaded the messages our reset
     messages.clear();
 
@@ -43,7 +43,6 @@ public class DataServlet extends HttpServlet {
     messages.add(message3);
 
     // converting the message array list to a json 
-    // TO DO: make gson object to then do g.toJson(object) 
     String jsonString = convertToJsonUsingGson(messages);
 
     // send the json as the response  
