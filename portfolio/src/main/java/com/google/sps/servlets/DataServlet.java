@@ -26,14 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
     
     // instance vairables 
-    ArrayList<String> messages = new ArrayList<String>();
+    ArrayList<String> messages;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
 
-    //make sure that if the page is reloaded the messages our reset
-    messages.clear();
+    //make sure that if the page is reloaded the messages are reset
+    messages = new ArrayList<String>();
 
     String message1 = "nicolette is my sister who i love a lot";
     String message2 = "lilo is my brother";
