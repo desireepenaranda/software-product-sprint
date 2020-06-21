@@ -32,27 +32,47 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
 
-    //make sure that if the page is reloaded the messages are reset
-    messages = new ArrayList<String>();
+    // only show the messages and print json if messages not null
+    if(messages != null){
+      // converting the message array list to a json 
+        String jsonString = convertToJsonUsingGson(messages);
 
-    String message1 = "nicolette is my sister who i love a lot";
-    String message2 = "lilo is my brother";
-    String message3 = "fran is me!";
-    messages.add(message1);
-    messages.add(message2);
-    messages.add(message3);
+        // send the json as the response  
+        response.setContentType("application/json;");
+        response.getWriter().println(jsonString);
+    }
 
-    // converting the message array list to a json 
-    String jsonString = convertToJsonUsingGson(messages);
-
-    // send the json as the response  
-    response.setContentType("application/json;");
-    response.getWriter().println(jsonString);
   }
+
+   @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // recieve the comments from response.getParamaters 
+    String userName = getParamatersDataMassaged(request, "username");
+    String specificComment = getParamatersDataMassaged(request, "comment");
+
+    // TODO: make an object for the comments to take all the info (name, time, video/picture)
+    String completeComment = userName + " says " + specificComment; 
+    
+    // create new message array if null
+    if(messages == null){
+       messages = new ArrayList<String>();
+    }
+    //add the comments to the messages array
+    messages.add(completeComment);
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
+  }
+
   // method that takes in an arraylist of string and returns in json string form 
   private String convertToJsonUsingGson(ArrayList<String> messagesList) {
     Gson gson = new Gson();
     String json = gson.toJson(messagesList);
     return json;
+  }
+
+   /**  returns the massaged version of getting the data from the request*/
+  private String getParamatersDataMassaged(HttpServletRequest request, String parameterName) {
+    return request.getParameter(parameterName);
   }
 }
