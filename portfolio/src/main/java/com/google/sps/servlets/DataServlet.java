@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
@@ -33,23 +36,40 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+        Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+
+        // reset messages in order to always showcase all the comments since start of time in my webpage 
+        messages = new ArrayList<String>();
+        
+        // TODO: make a comment type 
+        for (Entity entity : results.asIterable()) {
+            long id = entity.getKey().getId();
+            String username = (String) entity.getProperty("username");
+            String text = (String) entity.getProperty("text");
+            long timestamp = (long) entity.getProperty("timestamp");
+
+            String completeComment = username + " said " + text + " at " + timestamp; 
+            if(messages != null){
+                messages.add(completeComment);
+            }
+        }
 
     // only show the messages and print json if messages not null
-    if(messages != null){
-      // converting the message array list to a json 
+    if(messages.size() != 0){
+        // converting the message array list to a json 
         String jsonString = convertToJsonUsingGson(messages);
 
         // send the json as the response  
         response.setContentType("application/json;");
         response.getWriter().println(jsonString);
     }
-
   }
 
    @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: data store & entity creation 
+    // data store & entity creation 
     Entity taskEntity = new Entity("comment");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   
@@ -63,16 +83,11 @@ public class DataServlet extends HttpServlet {
     taskEntity.setProperty("text", specificComment);
     taskEntity.setProperty("timestamp", timestamp);
     datastore.put(taskEntity);
-
-    // TODO: make an object for the comments to take all the info (name, time, video/picture)
-    String completeComment = userName + " says " + specificComment; 
     
     // create new message array if null
     if(messages == null){
        messages = new ArrayList<String>();
     }
-    //add the comments to the messages array 
-    messages.add(completeComment);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
