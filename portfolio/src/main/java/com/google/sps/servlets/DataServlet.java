@@ -20,6 +20,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
@@ -46,9 +49,20 @@ public class DataServlet extends HttpServlet {
 
    @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO: data store & entity creation 
+    Entity taskEntity = new Entity("comment");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
     // recieve the comments from response.getParamaters 
     String userName = getParamatersDataMassaged(request, "username");
     String specificComment = getParamatersDataMassaged(request, "comment");
+    long timestamp = System.currentTimeMillis();
+
+    // update entity properties to be of the 
+    taskEntity.setProperty("username", userName);
+    taskEntity.setProperty("text", specificComment);
+    taskEntity.setProperty("timestamp", timestamp);
+    datastore.put(taskEntity);
 
     // TODO: make an object for the comments to take all the info (name, time, video/picture)
     String completeComment = userName + " says " + specificComment; 
@@ -57,7 +71,7 @@ public class DataServlet extends HttpServlet {
     if(messages == null){
        messages = new ArrayList<String>();
     }
-    //add the comments to the messages array
+    //add the comments to the messages array 
     messages.add(completeComment);
 
     // Redirect back to the HTML page.
