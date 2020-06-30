@@ -29,8 +29,10 @@
    
      // async method that fetches the name from the /data tab
     async function getNameInfoUsingAsycAwait(){
+        console.log("made it into asynch call");
         const response = await fetch('/data');
         const nameResponse = await response.text();
+        console.log(nameResponse);
         document.getElementById('name-container').innerText = nameResponse;
 
     }
@@ -38,5 +40,5 @@
     document.addEventListener('DOMContentLoaded', function() {
             // method call to get the name response 
             getNameInfoUsingAsycAwait();
-        });
+    });
 
