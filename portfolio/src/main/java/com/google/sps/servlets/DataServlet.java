@@ -31,8 +31,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
     
-    // instance vairables 
-    ArrayList<String> messages;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -41,7 +39,7 @@ public class DataServlet extends HttpServlet {
         PreparedQuery results = datastore.prepare(query);
 
         // reset messages in order to always showcase all the comments since start of time in my webpage 
-        messages = new ArrayList<String>();
+        ArrayList<String> messages = new ArrayList<String>();
         
         // TODO: make a comment type 
         for (Entity entity : results.asIterable()) {
@@ -56,15 +54,15 @@ public class DataServlet extends HttpServlet {
             }
         }
 
-    // only show the messages and print json if messages not null
-    if(messages.size() != 0){
-        // converting the message array list to a json 
-        String jsonString = convertToJsonUsingGson(messages);
+        // only show the messages and print json if messages not null
+        if(messages.size() != 0){
+            // converting the message array list to a json 
+            String jsonString = convertToJsonUsingGson(messages);
 
-        // send the json as the response  
-        response.setContentType("application/json;");
-        response.getWriter().println(jsonString);
-    }
+            // send the json as the response  
+            response.setContentType("application/json;");
+            response.getWriter().println(jsonString);
+        }
   }
 
    @Override
@@ -78,16 +76,11 @@ public class DataServlet extends HttpServlet {
     String specificComment = getParamatersDataMassaged(request, "comment");
     long timestamp = System.currentTimeMillis();
 
-    // update entity properties to be of the 
+    // update entity properties to be the user's inputs
     taskEntity.setProperty("username", userName);
     taskEntity.setProperty("text", specificComment);
     taskEntity.setProperty("timestamp", timestamp);
     datastore.put(taskEntity);
-    
-    // create new message array if null
-    if(messages == null){
-       messages = new ArrayList<String>();
-    }
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
