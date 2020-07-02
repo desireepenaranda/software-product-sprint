@@ -13,15 +13,26 @@
       <img src="/images\fran_guitar.jpg" alt="Fran's GUitar Pic" width="500" height="600">
       <button onclick="addRandomGreeting()">Hello</button>
       <div id="greeting-container"></div>
-      <label> Comments Since the Begining of Time  </label>
-      <div id="comment-list">Comments Placeholder</div>
+    </div>
 
-    <form action="/data" method="POST">
-      <p>Hi add your thoughts to the comment list above!:</p>
-      <input type="text" name="username" value="enter your name here"><br/>
-      <input type="text" name="comment" value="enter comment here"><br/>
-      <input type="submit" />
-    </form>
+    <div id="create-comment-container">
+        <form action="/data" method="POST" enctype="multipart/form-data">
+        <p>Hi add your name, comment and picture about anything on your mind!:</p>
+        <input type="text" name="username" value="enter your user name here"><br/>
+        <input type="text" name="comment" value="enter comment here"><br/>
+        <p>Upload an image:</p>
+        <input type="file" name="image">
+        <br/><br/>
+        <input type="submit" />
+        </form>
+    </div>
+    
+
+     <div id="comment-list-container" >
+        <label> Comments Since the Begining of Time  </label>
+      <div id="comment-list">Comments Placeholder</div>
     </div>
   </body>
+
+
 </html>
